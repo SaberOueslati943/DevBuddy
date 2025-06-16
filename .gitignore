@@ -1,0 +1,17 @@
+# Ignore everything in .idea
+.idea/*
+
+# But do NOT ignore codeStyles folder and its contents
+!.idea/codeStyles/
+!.idea/codeStyles/**
+
+# Other ignores
+*.iml
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+.DS_Store
+Thumbs.db
