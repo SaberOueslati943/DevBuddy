@@ -12,12 +12,14 @@ import com.saberoueslati.devbuddy.features.feature1.Feature1
 import com.saberoueslati.devbuddy.features.feature1.Feature1Route
 import com.saberoueslati.devbuddy.features.feature2.Feature2
 import com.saberoueslati.devbuddy.features.feature2.Feature2Route
+import com.saberoueslati.devbuddy.features.home.Home
+import com.saberoueslati.devbuddy.features.home.HomeRoute
 
 @Composable
 fun NavigationRoot(
     modifier: Modifier = Modifier
 ) {
-    val backStack = rememberNavBackStack(Feature1Route)
+    val backStack = rememberNavBackStack(HomeRoute)
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
@@ -43,6 +45,14 @@ fun NavigationRoot(
                         key = key
                     ) {
                         Feature2(key.id)
+                    }
+                }
+
+                is HomeRoute -> {
+                    NavEntry(
+                        key = key
+                    ) {
+                        Home()
                     }
                 }
 

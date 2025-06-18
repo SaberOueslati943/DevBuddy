@@ -46,6 +46,9 @@ android {
             kotlin.srcDir("build/generated/ksp/${name}/kotlin")
         }
     }
+    hilt {
+        enableAggregatingTask = false
+    }
 }
 
 dependencies {
@@ -62,7 +65,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Dependency Injection - Hilt
-    implementation(libs.hilt)
+    implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
 
     // Database - Room
