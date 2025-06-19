@@ -1,6 +1,9 @@
 # Ignore everything in .idea
 .idea/*
 
+# Ignore everything in .kotlin
+.kotlin/*
+
 # But do NOT ignore codeStyles folder and its contents
 !.idea/codeStyles/
 !.idea/codeStyles/**
