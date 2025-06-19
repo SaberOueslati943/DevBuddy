@@ -1,7 +1,6 @@
 package com.saberoueslati.devbuddy.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -16,12 +15,9 @@ import com.saberoueslati.devbuddy.features.home.Home
 import com.saberoueslati.devbuddy.features.home.HomeRoute
 
 @Composable
-fun NavigationRoot(
-    modifier: Modifier = Modifier
-) {
+fun NavigationRoot() {
     val backStack = rememberNavBackStack(HomeRoute)
     NavDisplay(
-        modifier = modifier,
         backStack = backStack,
         entryDecorators = listOf(
             rememberSavedStateNavEntryDecorator(),
