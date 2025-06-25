@@ -15,13 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 
 // Light Theme Colors
-val LightPrimary = Color(0xFF2C6E49)
+val LightPrimary = Color(0xFF111827)
 val LightOnPrimary = Color.White
-val LightSecondary = Color(0xFF90BE6D)
+val LightSecondary = Color.White
 val LightOnSecondary = Color.Black
-val LightBackground = Color(0xFFF8F9FA)
+val LightBackground = Color(0xFF030712)
 val LightSurface = Color(0xFFFFFFFF)
-val LightOnSurface = Color(0xFF1B1B1B)
+val LightOnSurface = Color(0xFFFFFFFF)
 val LightError = Color(0xFFB00020)
 val LightOnError = Color.White
 

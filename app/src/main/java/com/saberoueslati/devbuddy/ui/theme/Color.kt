@@ -43,3 +43,7 @@ val Color.Companion.error: Color
 val Color.Companion.onError: Color
     @Composable
     get() = MaterialTheme.colorScheme.onError
+
+val Color.Companion.orange: Color
+    @Composable
+    get() = Color(0xFFFF9800)

@@ -1,5 +1,8 @@
 package com.saberoueslati.devbuddy.features.home
 
+import com.saberoueslati.devbuddy.domain.model.TaskStatus
+
 data class HomeState(
-    val placeHolder: Int = 0
+    val query: String = "",
+    val filter: TaskStatus? = null
 )
