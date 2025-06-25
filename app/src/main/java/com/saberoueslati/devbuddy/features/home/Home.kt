@@ -65,6 +65,7 @@ import com.saberoueslati.devbuddy.ui.theme.primary
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+// TODO: change some icons in the task item
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
