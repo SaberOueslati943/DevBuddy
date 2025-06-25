@@ -7,6 +7,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.saberoueslati.devbuddy.features.addtask.AddTask
+import com.saberoueslati.devbuddy.features.addtask.AddTaskRoute
 import com.saberoueslati.devbuddy.features.feature1.Feature1
 import com.saberoueslati.devbuddy.features.feature1.Feature1Route
 import com.saberoueslati.devbuddy.features.feature2.Feature2
@@ -48,7 +50,15 @@ fun NavigationRoot() {
                     NavEntry(
                         key = key
                     ) {
-                        Home()
+                        Home(backStack)
+                    }
+                }
+
+                is AddTaskRoute -> {
+                    NavEntry(
+                        key = key
+                    ) {
+                        AddTask()
                     }
                 }
 

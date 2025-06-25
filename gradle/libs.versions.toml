@@ -7,18 +7,20 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.06.00"
+composeBom = "2025.06.01"
 hilt = "2.56.2"
 hiltNavigationCompose = "1.2.0"
-room = "2.7.1"
+materialIconsExtendedAndroid = "1.7.8"
+room = "2.7.2"
 ksp = "2.0.21-1.0.25"
-nav3Core = "1.0.0-alpha03"
-lifecycleViewmodelNav3 = "1.0.0-alpha01"
+nav3Core = "1.0.0-alpha04"
+lifecycleViewmodelNav3 = "1.0.0-alpha02"
 kotlinSerialization = "2.1.21"
 kotlinxSerializationCore = "1.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -64,6 +64,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // UI - Icons
+    implementation(libs.androidx.material.icons.extended.android)
+
     // Dependency Injection - Hilt
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)

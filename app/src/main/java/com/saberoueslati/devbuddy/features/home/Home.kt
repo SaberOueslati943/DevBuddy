@@ -21,12 +21,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,24 +55,35 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation3.runtime.NavBackStack
 import com.saberoueslati.devbuddy.R
 import com.saberoueslati.devbuddy.data.repository.MockTaskRepositoryImpl
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
+import com.saberoueslati.devbuddy.features.addtask.AddTaskRoute
 import com.saberoueslati.devbuddy.ui.composables.Filler
 import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
 import com.saberoueslati.devbuddy.ui.theme.onPrimary
 import com.saberoueslati.devbuddy.ui.theme.primary
+import com.saberoueslati.devbuddy.utils.React
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// TODO: change some icons in the task item
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
+    backStack: NavBackStack,
     vm: HomeViewModel = hiltViewModel()
 ) {
+    vm.reaction.React {
+        when (it) {
+            HomeReaction.OnAddTaskClicked -> {
+                backStack.add(AddTaskRoute)
+            }
+        }
+    }
+
     val state by vm.state.collectAsState()
     HomeContent(
         state = state,
@@ -404,7 +417,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                         horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            imageVector = Icons.Default.AccessTime,
                             contentDescription = "Estimate",
                             tint = Color(0xFF9CA3AF),
                             modifier = Modifier.size(Spacing.l)
@@ -418,7 +431,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                     // Code Snippet Indicator
                     if (task.hasCodeSnippet) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            imageVector = Icons.Default.Code,
                             contentDescription = "Has Code",
                             tint = Color(0xFF3B82F6),
                             modifier = Modifier.size(Spacing.l)
@@ -431,7 +444,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
+                        imageVector = Icons.Default.AccountTree,
                         contentDescription = "Status",
                         tint = task.status.color,
                         modifier = Modifier.size(Spacing.l)
