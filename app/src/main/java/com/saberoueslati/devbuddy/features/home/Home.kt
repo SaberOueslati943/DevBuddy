@@ -24,19 +24,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -61,6 +57,8 @@ import com.saberoueslati.devbuddy.data.repository.MockTaskRepositoryImpl
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.features.addtask.AddTaskRoute
+import com.saberoueslati.devbuddy.ui.composables.AppTextField
+import com.saberoueslati.devbuddy.ui.composables.AppTextFieldType
 import com.saberoueslati.devbuddy.ui.composables.Filler
 import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
@@ -237,7 +235,7 @@ private fun Filters(
             if (status != TaskStatus.COMPLETED) {
                 FilterItem(
                     isSelected = state.filter == status,
-                    label = status.displayName
+                    label = stringResource(status.resourceId)
                 ) {
                     onAction.invoke(HomeAction.OnFilterSelected(status))
                 }
@@ -251,52 +249,20 @@ private fun Search(
     state: HomeState,
     onAction: (HomeAction) -> Unit
 ) {
-    OutlinedTextField(
+    AppTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacing.m),
+        placeholder = stringResource(R.string.search_tasks),
         value = state.query,
         onValueChange = { newValue: String ->
             onAction.invoke(HomeAction.OnSearchQueryChanged(newValue))
         },
-        placeholder = {
-            Text(
-                text = stringResource(R.string.search_tasks),
-                color = Color(0xFF9ca39f)
-            )
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search",
-                tint = Color(0xFF9CA3AF)
-            )
-        },
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    onAction.invoke(HomeAction.OnClearSearchQueryClicked)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = "Search",
-                    tint = Color(0xFF9CA3AF)
-                )
+        type = AppTextFieldType.Search(
+            onClearClicked = {
+                onAction.invoke(HomeAction.OnClearSearchQueryClicked)
             }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Spacing.m),
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFF1F2937),
-            errorContainerColor = Color(0xFF1F2937),
-            focusedContainerColor = Color(0xFF1F2937),
-            disabledContainerColor = Color(0xFF1F2937),
-            focusedBorderColor = Color(0xFF3B82F6),
-            unfocusedBorderColor = Color(0xFF374151),
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            cursorColor = Color.White
-        ),
-        maxLines = 1
+        )
     )
 }
 
@@ -380,7 +346,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                                 shape = RoundedCornerShape(Spacing.xxs)
                             )
                             .padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
-                    ) { Text(text = tag.displayName, color = tag.color, fontSize = 12.sp) }
+                    ) { Text(text = stringResource(tag.resourceId), color = tag.color, fontSize = 12.sp) }
                 }
             }
             Filler(Spacing.xxs)
@@ -450,7 +416,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                         modifier = Modifier.size(Spacing.l)
                     )
                     Text(
-                        text = task.status.displayName,
+                        text = stringResource(task.status.resourceId) ,
                         color = task.status.color,
                         fontSize = 12.sp
                     )
