@@ -38,4 +38,6 @@
     <string name="task_due_date">Due Date</string>
     <string name="task_due_date_placeholder">dd/mm/yyyy</string>
     <string name="task_estinamte">Estimate (hours)</string>
+    <string name="task_code_snippet">Code Snippet</string>
+    <string name="task_hide_snippet">Hide Code</string>
 </resources>

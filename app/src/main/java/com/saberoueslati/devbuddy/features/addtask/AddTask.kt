@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
@@ -63,6 +64,7 @@ import com.saberoueslati.devbuddy.ui.composables.AppText
 import com.saberoueslati.devbuddy.ui.composables.AppTextField
 import com.saberoueslati.devbuddy.ui.composables.AppTextFieldType
 import com.saberoueslati.devbuddy.ui.composables.Filler
+import com.saberoueslati.devbuddy.ui.composables.Screen
 import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
 import com.saberoueslati.devbuddy.ui.theme.onPrimary
@@ -137,7 +139,7 @@ fun AddTaskContent() {
 
             AppText(text = stringResource(R.string.task_description))
             AppTextField(
-                modifier = Modifier.fillMaxHeight(0.2f),
+                modifier = Modifier.height(Screen.heightPercent(0.15f)),
                 placeholder = stringResource(R.string.task_description_placeholder),
                 value = "", // TODO:
                 onValueChange = { newValue ->
@@ -363,7 +365,38 @@ fun AddTaskContent() {
                 }
             }
 
-            Filler(height = Spacing.xxl)
+            Filler(height = Spacing.m)
+
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    AppText(text = stringResource(R.string.task_code_snippet))
+                    TextButton(onClick = {
+                        // TODO:
+                    }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(imageVector = Icons.Default.Code, contentDescription = "Code Snippet", tint = Color(0xFF2563EB))
+                            AppText(text = stringResource(R.string.task_hide_snippet), color = Color(0xFF2563EB))
+                        }
+                    }
+                }
+                AppTextField(
+                    modifier = Modifier.height(Screen.heightPercent(0.25f)),
+                    placeholder = stringResource(R.string.task_description_placeholder),
+                    value = "", // TODO:
+                    onValueChange = { newValue ->
+                        // TODO:
+                    },
+                    type = AppTextFieldType.Regular
+                )
+
+                Filler(height = Spacing.xxl)
+            }
         }
     }
 }
