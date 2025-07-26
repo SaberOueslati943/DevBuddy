@@ -36,4 +36,6 @@
     <string name="tag_api">API</string>
     <string name="tag_database">Database</string>
     <string name="task_due_date">Due Date</string>
+    <string name="task_due_date_placeholder">dd/mm/yyyy</string>
+    <string name="task_estinamte">Estimate (hours)</string>
 </resources>
