@@ -18,26 +18,41 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.saberoueslati.devbuddy.R
@@ -52,6 +67,10 @@ import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
 import com.saberoueslati.devbuddy.ui.theme.onPrimary
 import com.saberoueslati.devbuddy.ui.theme.primary
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun AddTask() {
@@ -240,12 +259,111 @@ fun AddTaskContent() {
 
             Filler(height = Spacing.m)
 
-            Row {
-                Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.xs)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     AppText(text = stringResource(R.string.task_due_date))
-                    
+
+                    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+                    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+                    var showDatePicker by remember { mutableStateOf(false) }
+
+                    val datePickerState = rememberDatePickerState(
+                        initialSelectedDateMillis = selectedDate?.atStartOfDay(ZoneId.systemDefault())
+                            ?.toInstant()
+                            ?.toEpochMilli()
+                    )
+
+                    if (showDatePicker) {
+                        DatePickerDialog(
+                            onDismissRequest = { showDatePicker = false },
+                            confirmButton = {
+                                TextButton(onClick = {
+                                    datePickerState.selectedDateMillis?.let { millis ->
+                                        val localDate = Instant.ofEpochMilli(millis)
+                                            .atZone(ZoneId.systemDefault())
+                                            .toLocalDate()
+                                        selectedDate = localDate
+                                    }
+                                    showDatePicker = false
+                                }) {
+                                    Text("OK")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showDatePicker = false }) {
+                                    Text("Cancel")
+                                }
+                            }
+                        ) {
+                            DatePicker(state = datePickerState)
+                        }
+                    }
+
+                    AppTextField(
+                        placeholder = stringResource(R.string.task_due_date_placeholder),
+                        value = selectedDate?.format(dateFormatter) ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        type = AppTextFieldType.Custom(
+                            trailingIcon = {
+                                IconButton(onClick = { showDatePicker = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Pick Date",
+                                        tint = Color.White
+                                    )
+                                }
+                            }
+                        )
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    AppText(text = stringResource(R.string.task_estinamte))
+                    AppTextField(
+                        placeholder = "",
+                        value = "0", // TODO:
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        onValueChange = { newValue ->
+                            // TODO:
+                        },
+                        textStyle = TextStyle.Default.copy(textAlign = TextAlign.Center),
+                        type = AppTextFieldType.Custom(
+                            leadingIcon = {
+                                IconButton(onClick = {
+                                    // TODO:
+                                }) {
+                                    Icon(
+                                        modifier = Modifier.padding(Spacing.xxs),
+                                        imageVector = Icons.Default.Remove, tint = Color.White, contentDescription = "minus one"
+                                    )
+                                }
+
+                            },
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    // TODO:
+                                }) {
+                                    Icon(
+                                        modifier = Modifier.padding(Spacing.xxs),
+                                        imageVector = Icons.Default.Add, tint = Color.White, contentDescription = "plus one"
+                                    )
+                                }
+                            }
+                        )
+                    )
                 }
             }
+
+            Filler(height = Spacing.xxl)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.saberoueslati.devbuddy.ui.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 
 
 @Composable
@@ -20,19 +22,25 @@ fun AppTextField(
     placeholder: String,
     value: String,
     onValueChange: (String) -> Unit,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = TextStyle.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     type: AppTextFieldType,
 ) {
     OutlinedTextField(
         value = value,
+        readOnly = readOnly,
         onValueChange = { newValue: String ->
             onValueChange.invoke(newValue)
         },
+        keyboardOptions = keyboardOptions,
         placeholder = {
             Text(
                 text = placeholder,
                 color = Color(0xFF9ca39f)
             )
         },
+        textStyle = textStyle,
         modifier = modifier
             .fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
@@ -76,4 +84,6 @@ sealed class AppTextFieldType {
             }
         }
     }
+
+    class Custom(override val leadingIcon: @Composable (() -> Unit)? = null, override val trailingIcon: @Composable (() -> Unit)? = null) : AppTextFieldType()
 }
