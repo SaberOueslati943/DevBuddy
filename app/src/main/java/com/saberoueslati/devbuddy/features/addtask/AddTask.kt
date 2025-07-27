@@ -138,6 +138,7 @@ fun AddTaskContent(
                 .padding(top = Spacing.m)
         ) {
             AppText(text = stringResource(R.string.task_title))
+            Filler(height = Spacing.xs)
             AppTextField(
                 placeholder = stringResource(R.string.task_title_placeholder),
                 value = state.title,
@@ -147,9 +148,10 @@ fun AddTaskContent(
                 type = AppTextFieldType.Regular
             )
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             AppText(text = stringResource(R.string.task_description))
+            Filler(height = Spacing.xs)
             AppTextField(
                 modifier = Modifier.height(Screen.heightPercent(0.15f)),
                 placeholder = stringResource(R.string.task_description_placeholder),
@@ -160,9 +162,10 @@ fun AddTaskContent(
                 type = AppTextFieldType.Regular
             )
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             AppText(text = stringResource(R.string.task_priority))
+            Filler(height = Spacing.xs)
             val priorities = Priority.entries
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs)
@@ -205,9 +208,10 @@ fun AddTaskContent(
                 }
             }
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             AppText(text = stringResource(R.string.task_status))
+            Filler(height = Spacing.xs)
             val status = TaskStatus.entries.dropLast(1)
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs)
@@ -241,9 +245,10 @@ fun AddTaskContent(
                 }
             }
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             AppText(text = stringResource(R.string.task_tags))
+            Filler(height = Spacing.xs)
             val tags = TaskTag.entries
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -271,7 +276,7 @@ fun AddTaskContent(
                 }
             }
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             Row(
                 modifier = Modifier
@@ -281,8 +286,6 @@ fun AddTaskContent(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    AppText(text = stringResource(R.string.task_due_date))
-
                     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
                     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -320,6 +323,8 @@ fun AddTaskContent(
                         }
                     }
 
+                    AppText(text = stringResource(R.string.task_due_date))
+                    Filler(height = Spacing.xs)
                     AppTextField(
                         placeholder = stringResource(R.string.task_due_date_placeholder),
                         value = selectedDate?.format(dateFormatter) ?: "",
@@ -343,7 +348,8 @@ fun AddTaskContent(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    AppText(text = stringResource(R.string.task_estinamte))
+                    AppText(text = stringResource(R.string.task_estimate))
+                    Filler(height = Spacing.xs)
                     AppTextField(
                         placeholder = "",
                         value = state.estimate.toString(), // TODO:
@@ -379,7 +385,7 @@ fun AddTaskContent(
                 }
             }
 
-            Filler(height = Spacing.m)
+            Filler(height = Spacing.xl)
 
             Column {
                 Row(
@@ -395,19 +401,21 @@ fun AddTaskContent(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(imageVector = Icons.Default.Code, contentDescription = "Code Snippet", tint = Color(0xFF2563EB))
-                            AppText(text = stringResource(R.string.task_hide_snippet), color = Color(0xFF2563EB))
+                            AppText(text = stringResource(if (state.showCodeSnippet) R.string.task_hide_code_snippet else R.string.task_add_code_snippet), color = Color(0xFF2563EB))
                         }
                     }
                 }
-                AppTextField(
-                    modifier = Modifier.height(Screen.heightPercent(0.25f)),
-                    placeholder = stringResource(R.string.task_description_placeholder),
-                    value = state.codeSnippet,
-                    onValueChange = { newValue ->
-                        // TODO:
-                    },
-                    type = AppTextFieldType.Regular
-                )
+                if (state.showCodeSnippet) {
+                    AppTextField(
+                        modifier = Modifier.height(Screen.heightPercent(0.25f)),
+                        placeholder = stringResource(R.string.task_description_placeholder),
+                        value = state.codeSnippet,
+                        onValueChange = { newValue ->
+                            // TODO:
+                        },
+                        type = AppTextFieldType.Regular
+                    )
+                }
 
                 Filler(height = Spacing.xxl)
             }
