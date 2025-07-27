@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.saberoueslati.devbuddy.domain.model.Priority
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.domain.model.TaskTag
+import com.saberoueslati.devbuddy.utils.BG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,10 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTaskViewModel @Inject constructor(
-    defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+    @BG bg: CoroutineDispatcher
 ) : ViewModel() {
 
-    val viewModelScope: CoroutineScope = CoroutineScope(SupervisorJob() + defaultDispatcher)
+    val viewModelScope: CoroutineScope = CoroutineScope(SupervisorJob() + bg)
 
     private val _state = MutableStateFlow(AddTaskState())
     val state = _state.asStateFlow()

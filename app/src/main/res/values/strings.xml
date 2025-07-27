@@ -41,4 +41,5 @@
     <string name="task_code_snippet">Code Snippet</string>
     <string name="task_hide_code_snippet">Hide Code</string>
     <string name="task_add_code_snippet">Add Code</string>
+    <string name="task_title_required">Title field is required</string>
 </resources>

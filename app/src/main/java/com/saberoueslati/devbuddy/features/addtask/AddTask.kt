@@ -36,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -53,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -88,10 +90,15 @@ fun AddTask(
     val state by vm.state.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
 
+    val context = LocalContext.current
     vm.reaction.React {
         when (it) {
             AddTaskReaction.OnBackClicked -> backStack.remove(AddTaskRoute)
-            AddTaskReaction.OnSaveTaskCompleted -> TODO()
+            AddTaskReaction.OnSaveTaskCompleted -> TODO("add boolean to home so we can show a snack bar with success")
+            AddTaskReaction.InvalidTitle -> snackBarHostState.showSnackbar(
+                message = context.getString(R.string.task_title_required),
+                duration = SnackbarDuration.Short
+            )
         }
     }
 

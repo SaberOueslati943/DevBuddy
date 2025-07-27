@@ -68,6 +68,8 @@ import com.saberoueslati.devbuddy.utils.React
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+// TODO: add animations, finish Room side with addtask usecase, implement delete on home screen
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
@@ -416,7 +418,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                         modifier = Modifier.size(Spacing.l)
                     )
                     Text(
-                        text = stringResource(task.status.resourceId) ,
+                        text = stringResource(task.status.resourceId),
                         color = task.status.color,
                         fontSize = 12.sp
                     )
