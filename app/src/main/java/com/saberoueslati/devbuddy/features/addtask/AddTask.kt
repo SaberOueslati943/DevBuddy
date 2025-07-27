@@ -36,6 +36,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -72,6 +74,7 @@ import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
 import com.saberoueslati.devbuddy.ui.theme.onPrimary
 import com.saberoueslati.devbuddy.ui.theme.primary
+import com.saberoueslati.devbuddy.utils.React
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -82,21 +85,36 @@ fun AddTask(
     backStack: NavBackStack,
     vm: AddTaskViewModel = hiltViewModel()
 ) {
-
     val state by vm.state.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    vm.reaction.React {
+        when (it) {
+            AddTaskReaction.OnBackClicked -> backStack.remove(AddTaskRoute)
+            AddTaskReaction.OnSaveTaskCompleted -> TODO()
+        }
+    }
+
     AddTaskContent(
-        state = state
+        state = state,
+        snackbarHostState = snackBarHostState,
+        action = vm::onAction
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskContent(
-    state: AddTaskState
+    state: AddTaskState,
+    snackbarHostState: SnackbarHostState,
+    action: (AddTaskAction) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.safeDrawing,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -111,7 +129,7 @@ fun AddTaskContent(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-
+                            action.invoke(AddTaskAction.OnBackClicked)
                         }
                     ) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back Button")
@@ -119,7 +137,7 @@ fun AddTaskContent(
                 },
                 actions = {
                     Button(
-                        onClick = { /* Handle click */ },
+                        onClick = { action.invoke(AddTaskAction.OnSaveTaskClicked) },
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                         content = { Text(stringResource(R.string.save_task)) },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
@@ -143,7 +161,7 @@ fun AddTaskContent(
                 placeholder = stringResource(R.string.task_title_placeholder),
                 value = state.title,
                 onValueChange = { newValue ->
-                    // TODO:
+                    action.invoke(AddTaskAction.OnTitleChanged(newValue))
                 },
                 type = AppTextFieldType.Regular
             )
@@ -157,7 +175,7 @@ fun AddTaskContent(
                 placeholder = stringResource(R.string.task_description_placeholder),
                 value = state.description,
                 onValueChange = { newValue ->
-                    // TODO:
+                    action.invoke(AddTaskAction.OnDescriptionChanged(newValue))
                 },
                 type = AppTextFieldType.Regular
             )
@@ -179,6 +197,9 @@ fun AddTaskContent(
                             Card(
                                 modifier = Modifier
                                     .weight(1f),
+                                onClick = {
+                                    action.invoke(AddTaskAction.OnPriorityChanged(priority))
+                                },
                                 elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
                                 colors = CardDefaults.cardColors(containerColor = if (priority == state.priority) Color(0x4008298D) else Color(0xFF1E293B)),
                                 border = BorderStroke(1.dp, if (priority == state.priority) Color(0xFF3B82F6) else Color(0xFF374151))
@@ -220,6 +241,9 @@ fun AddTaskContent(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(),
+                        onClick = {
+                            action.invoke(AddTaskAction.OnStatusChanged(status))
+                        },
                         elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
                         colors = CardDefaults.cardColors(containerColor = if (status == state.status) Color(0x4008298D) else Color(0xFF1E293B)),
                         border = BorderStroke(1.dp, if (status == state.status) Color(0xFF3B82F6) else Color(0xFF374151))
@@ -257,6 +281,9 @@ fun AddTaskContent(
                 tags.forEach { tag ->
                     Card(
                         modifier = Modifier,
+                        onClick = {
+                            action.invoke(AddTaskAction.OnTagClicked(tag))
+                        },
                         elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
                         colors = CardDefaults.cardColors(containerColor = if (tag in state.tags) tag.backgroundColor.copy(alpha = 0.3f) else Color(0xFF374151)),
                         border = BorderStroke(1.dp, if (tag in state.tags) tag.color.copy(alpha = 0.5f) else Color(0xFF6B7280))
@@ -329,7 +356,7 @@ fun AddTaskContent(
                         placeholder = stringResource(R.string.task_due_date_placeholder),
                         value = selectedDate?.format(dateFormatter) ?: "",
                         onValueChange = {
-                            // TODO
+                            action.invoke(AddTaskAction.OnDueDateChanged(selectedDate))
                         },
                         readOnly = true,
                         type = AppTextFieldType.Custom(
@@ -352,16 +379,16 @@ fun AddTaskContent(
                     Filler(height = Spacing.xs)
                     AppTextField(
                         placeholder = "",
-                        value = state.estimate.toString(), // TODO:
+                        value = state.estimate.toString(),
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         onValueChange = { newValue ->
-                            // TODO:
+                            action.invoke(AddTaskAction.OnEstimateChanged(newValue.toInt()))
                         },
                         textStyle = TextStyle.Default.copy(textAlign = TextAlign.Center),
                         type = AppTextFieldType.Custom(
                             leadingIcon = {
                                 IconButton(onClick = {
-                                    // TODO:
+                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate + 1))
                                 }) {
                                     Icon(
                                         modifier = Modifier.padding(Spacing.xxs),
@@ -372,7 +399,7 @@ fun AddTaskContent(
                             },
                             trailingIcon = {
                                 IconButton(onClick = {
-                                    // TODO:
+                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate - 1))
                                 }) {
                                     Icon(
                                         modifier = Modifier.padding(Spacing.xxs),
@@ -395,7 +422,7 @@ fun AddTaskContent(
                 ) {
                     AppText(text = stringResource(R.string.task_code_snippet))
                     TextButton(onClick = {
-                        // TODO:
+                        action.invoke(AddTaskAction.OnCodeSnippetClicked)
                     }) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
@@ -411,7 +438,7 @@ fun AddTaskContent(
                         placeholder = stringResource(R.string.task_description_placeholder),
                         value = state.codeSnippet,
                         onValueChange = { newValue ->
-                            // TODO:
+                            action.invoke(AddTaskAction.OnCodeSnippetChanged(newValue))
                         },
                         type = AppTextFieldType.Regular
                     )
@@ -433,6 +460,6 @@ fun AddTaskContent(
 @Composable
 private fun AddTaskPreview() {
     DevBuddyTheme {
-        AddTaskContent(AddTaskState())
+        AddTaskContent(AddTaskState(), SnackbarHostState()) {}
     }
 }

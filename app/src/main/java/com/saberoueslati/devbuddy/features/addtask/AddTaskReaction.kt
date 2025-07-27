@@ -1,4 +1,9 @@
 package com.saberoueslati.devbuddy.features.addtask
 
-class AddTaskReaction {
+sealed class AddTaskReaction {
+    object OnBackClicked : AddTaskReaction()
+    object OnSaveTaskCompleted : AddTaskReaction()
+    companion object {
+        val InvalidTitle: AddTaskReaction
+    }
 }
