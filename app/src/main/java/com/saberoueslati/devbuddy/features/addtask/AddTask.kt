@@ -395,7 +395,7 @@ fun AddTaskContent(
                         type = AppTextFieldType.Custom(
                             leadingIcon = {
                                 IconButton(onClick = {
-                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate + 1))
+                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate - 1))
                                 }) {
                                     Icon(
                                         modifier = Modifier.padding(Spacing.xxs),
@@ -406,7 +406,7 @@ fun AddTaskContent(
                             },
                             trailingIcon = {
                                 IconButton(onClick = {
-                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate - 1))
+                                    action.invoke(AddTaskAction.OnEstimateChanged(state.estimate + 1))
                                 }) {
                                     Icon(
                                         modifier = Modifier.padding(Spacing.xxs),
