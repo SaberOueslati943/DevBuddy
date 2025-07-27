@@ -42,6 +42,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +55,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation3.runtime.NavBackStack
 import com.saberoueslati.devbuddy.R
 import com.saberoueslati.devbuddy.domain.model.Priority
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
@@ -75,13 +78,22 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun AddTask() {
-    AddTaskContent()
+fun AddTask(
+    backStack: NavBackStack,
+    vm: AddTaskViewModel = hiltViewModel()
+) {
+
+    val state by vm.state.collectAsState()
+    AddTaskContent(
+        state = state
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskContent() {
+fun AddTaskContent(
+    state: AddTaskState
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -128,7 +140,7 @@ fun AddTaskContent() {
             AppText(text = stringResource(R.string.task_title))
             AppTextField(
                 placeholder = stringResource(R.string.task_title_placeholder),
-                value = "", // TODO:
+                value = state.title,
                 onValueChange = { newValue ->
                     // TODO:
                 },
@@ -141,7 +153,7 @@ fun AddTaskContent() {
             AppTextField(
                 modifier = Modifier.height(Screen.heightPercent(0.15f)),
                 placeholder = stringResource(R.string.task_description_placeholder),
-                value = "", // TODO:
+                value = state.description,
                 onValueChange = { newValue ->
                     // TODO:
                 },
@@ -165,8 +177,8 @@ fun AddTaskContent() {
                                 modifier = Modifier
                                     .weight(1f),
                                 elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1F2937)),
-                                border = BorderStroke(1.dp, Color(0xFF374151))
+                                colors = CardDefaults.cardColors(containerColor = if (priority == state.priority) Color(0x4008298D) else Color(0xFF1E293B)),
+                                border = BorderStroke(1.dp, if (priority == state.priority) Color(0xFF3B82F6) else Color(0xFF374151))
                             ) {
                                 Row(
                                     modifier = Modifier.padding(Spacing.m),
@@ -205,8 +217,8 @@ fun AddTaskContent() {
                         modifier = Modifier
                             .fillMaxWidth(),
                         elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1F2937)),
-                        border = BorderStroke(1.dp, Color(0xFF374151))
+                        colors = CardDefaults.cardColors(containerColor = if (status == state.status) Color(0x4008298D) else Color(0xFF1E293B)),
+                        border = BorderStroke(1.dp, if (status == state.status) Color(0xFF3B82F6) else Color(0xFF374151))
                     ) {
                         Row(
                             modifier = Modifier
@@ -241,8 +253,8 @@ fun AddTaskContent() {
                     Card(
                         modifier = Modifier,
                         elevation = CardDefaults.cardElevation(defaultElevation = Spacing.xxs),
-                        colors = CardDefaults.cardColors(containerColor = tag.backgroundColor.copy(alpha = 0.3f)),
-                        border = BorderStroke(1.dp, tag.color.copy(alpha = 0.5f))
+                        colors = CardDefaults.cardColors(containerColor = if (tag in state.tags) tag.backgroundColor.copy(alpha = 0.3f) else Color(0xFF374151)),
+                        border = BorderStroke(1.dp, if (tag in state.tags) tag.color.copy(alpha = 0.5f) else Color(0xFF6B7280))
                     ) {
                         Row(
                             modifier = Modifier
@@ -252,7 +264,7 @@ fun AddTaskContent() {
                         ) {
                             AppText(
                                 text = stringResource(tag.resourceId),
-                                color = tag.color
+                                color = if (tag in state.tags) tag.color else Color(0xFF9CA3AF)
                             )
                         }
                     }
@@ -295,12 +307,12 @@ fun AddTaskContent() {
                                     }
                                     showDatePicker = false
                                 }) {
-                                    Text("OK")
+                                    Text(stringResource(android.R.string.ok))
                                 }
                             },
                             dismissButton = {
                                 TextButton(onClick = { showDatePicker = false }) {
-                                    Text("Cancel")
+                                    Text(stringResource(android.R.string.cancel))
                                 }
                             }
                         ) {
@@ -311,7 +323,9 @@ fun AddTaskContent() {
                     AppTextField(
                         placeholder = stringResource(R.string.task_due_date_placeholder),
                         value = selectedDate?.format(dateFormatter) ?: "",
-                        onValueChange = {},
+                        onValueChange = {
+                            // TODO
+                        },
                         readOnly = true,
                         type = AppTextFieldType.Custom(
                             trailingIcon = {
@@ -332,7 +346,7 @@ fun AddTaskContent() {
                     AppText(text = stringResource(R.string.task_estinamte))
                     AppTextField(
                         placeholder = "",
-                        value = "0", // TODO:
+                        value = state.estimate.toString(), // TODO:
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         onValueChange = { newValue ->
                             // TODO:
@@ -388,7 +402,7 @@ fun AddTaskContent() {
                 AppTextField(
                     modifier = Modifier.height(Screen.heightPercent(0.25f)),
                     placeholder = stringResource(R.string.task_description_placeholder),
-                    value = "", // TODO:
+                    value = state.codeSnippet,
                     onValueChange = { newValue ->
                         // TODO:
                     },
@@ -402,10 +416,15 @@ fun AddTaskContent() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@PreviewLightDark
+@Preview(
+    name = "S23 Ultra Preview",
+    showSystemUi = true,
+    showBackground = true,
+    device = "spec:width=412dp,height=933dp,dpi=500"
+)
 @Composable
 private fun AddTaskPreview() {
     DevBuddyTheme {
-        AddTask()
+        AddTaskContent(AddTaskState())
     }
 }

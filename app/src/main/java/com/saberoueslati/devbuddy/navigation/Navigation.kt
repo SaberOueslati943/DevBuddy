@@ -58,7 +58,7 @@ fun NavigationRoot() {
                     NavEntry(
                         key = key
                     ) {
-                        AddTask()
+                        AddTask(backStack)
                     }
                 }
 
