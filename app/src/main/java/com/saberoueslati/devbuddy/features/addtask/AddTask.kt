@@ -94,7 +94,10 @@ fun AddTask(
     vm.reaction.React {
         when (it) {
             AddTaskReaction.OnBackClicked -> backStack.remove(AddTaskRoute)
-            AddTaskReaction.OnSaveTaskCompleted -> TODO("add boolean to home so we can show a snack bar with success")
+            AddTaskReaction.OnSaveTaskCompleted -> {
+                // TODO: add boolean to home so we can show a snack bar with success
+                backStack.remove(AddTaskRoute)
+            }
             AddTaskReaction.InvalidTitle -> snackBarHostState.showSnackbar(
                 message = context.getString(R.string.task_title_required),
                 duration = SnackbarDuration.Short

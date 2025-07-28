@@ -1,10 +1,15 @@
 package com.saberoueslati.devbuddy.data.repository
 
+import com.saberoueslati.devbuddy.data.local.TaskEntity
+import com.saberoueslati.devbuddy.domain.mapper.toEntity
 import com.saberoueslati.devbuddy.domain.model.Priority
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.domain.model.TaskTag
 import com.saberoueslati.devbuddy.domain.repository.TaskRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import java.util.Date
 
@@ -67,15 +72,38 @@ val mockTasks = listOf(
 )
 
 class MockTaskRepositoryImpl : TaskRepository {
-    override fun getTasks(): List<Task> {
-        return mockTasks
+
+    private val mockTaskFlow = MutableStateFlow(mockTasks.toMutableList())
+
+    override fun getTasksAsFlow(): Flow<List<TaskEntity>> {
+        return mockTaskFlow.map { tasks -> tasks.map { it.toEntity() } }
     }
 
-    override suspend fun addTask(task: Task) {
-        // do nothing
+    override fun getTasks(): List<TaskEntity> {
+        return mockTasks.map { it.toEntity() }
+    }
+
+    override suspend fun addTask(task: TaskEntity) {
+        val newTask = Task(
+            id = 6,
+            title = "Refactor authentication flow",
+            description = "Simplify login/signup logic and remove duplicated code",
+            priority = Priority.HIGH,
+            status = TaskStatus.TODO,
+            tags = listOf(TaskTag.FEATURE, TaskTag.AUTHENTICATION),
+            dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 3) }.time,
+            estimateHours = 4,
+            hasCodeSnippet = true
+        )
+        val current = mockTaskFlow.value.toMutableList()
+        current.add(newTask)
+        mockTaskFlow.emit(current)
     }
 
     override suspend fun markDone(taskId: Int) {
-        // do nothing
+        val updated = mockTaskFlow.value.map {
+            if (it.id == taskId) it.copy(status = TaskStatus.COMPLETED) else it
+        }
+        mockTaskFlow.emit(updated.toMutableList())
     }
 }

@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
+import com.saberoueslati.devbuddy.utils.getOrElse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +20,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val useCases: HomeUseCases
 ) : ViewModel() {
-    val tasks = useCases.getAllTasksUseCase.execute()
+    val tasks = useCases.getAllTasksAsFlowUseCase.execute().getOrElse(emptyFlow())
 
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()

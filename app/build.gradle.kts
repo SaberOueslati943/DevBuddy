@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 android {
     namespace = "com.saberoueslati.devbuddy"
     compileSdk = 36
@@ -34,9 +38,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
     buildFeatures {
         compose = true

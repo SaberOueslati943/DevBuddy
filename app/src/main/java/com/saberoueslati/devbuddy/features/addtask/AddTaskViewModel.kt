@@ -1,6 +1,7 @@
 package com.saberoueslati.devbuddy.features.addtask
 
 import androidx.lifecycle.ViewModel
+import com.saberoueslati.devbuddy.data.repository.mockTasks
 import com.saberoueslati.devbuddy.domain.model.Priority
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.domain.model.TaskTag
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTaskViewModel @Inject constructor(
-    @BG bg: CoroutineDispatcher
+    @BG bg: CoroutineDispatcher,
+    private val useCases: AddTaskUseCases
 ) : ViewModel() {
 
     val viewModelScope: CoroutineScope = CoroutineScope(SupervisorJob() + bg)
@@ -75,7 +77,8 @@ class AddTaskViewModel @Inject constructor(
             return@launch
         }
 
-        // TODO: use a usecase to save the task to room
+        // TODO: use proper TASK class
+        useCases.addTaskUseCase.execute(mockTasks.last())
 
         _reaction.emit(AddTaskReaction.OnSaveTaskCompleted)
     }

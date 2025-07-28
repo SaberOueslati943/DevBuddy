@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavBackStack
 import com.saberoueslati.devbuddy.R
-import com.saberoueslati.devbuddy.data.repository.MockTaskRepositoryImpl
+import com.saberoueslati.devbuddy.data.repository.mockTasks
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.features.addtask.AddTaskRoute
@@ -76,6 +76,9 @@ fun Home(
     backStack: NavBackStack,
     vm: HomeViewModel = hiltViewModel()
 ) {
+    val state by vm.state.collectAsState()
+    val tasks by vm.tasks.collectAsState(initial = emptyList())
+
     vm.reaction.React {
         when (it) {
             HomeReaction.OnAddTaskClicked -> {
@@ -84,11 +87,11 @@ fun Home(
         }
     }
 
-    val state by vm.state.collectAsState()
+
     HomeContent(
         state = state,
         onAction = vm::onAction,
-        tasks = vm.tasks
+        tasks = tasks
     )
 }
 
@@ -460,7 +463,7 @@ private fun HomePreview() {
         HomeContent(
             HomeState(),
             {},
-            MockTaskRepositoryImpl().getTasks()
+            mockTasks
         )
     }
 }
