@@ -13,6 +13,6 @@ data class AddTaskState(
     val tags: List<TaskTag> = emptyList(),
     val dueDate: LocalDate? = null,
     val estimate: Int = 0,
-    val showCodeSnippet: Boolean = true,
+    val showCodeSnippet: Boolean = false,
     val codeSnippet: String = ""
 )

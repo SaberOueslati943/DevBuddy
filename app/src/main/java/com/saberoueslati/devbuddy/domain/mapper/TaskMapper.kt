@@ -1,6 +1,5 @@
 package com.saberoueslati.devbuddy.domain.mapper
 
-import android.util.Log
 import com.saberoueslati.devbuddy.data.local.TaskEntity
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskTag
@@ -23,7 +22,6 @@ fun Task.toEntity(): TaskEntity {
 }
 
 fun TaskEntity.toModel(): Task {
-    Log.i("Ariadne", "toModel: $this")
     return Task(
         id = id,
         title = title,
