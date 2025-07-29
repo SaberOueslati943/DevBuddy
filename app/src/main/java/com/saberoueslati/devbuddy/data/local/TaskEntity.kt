@@ -15,5 +15,5 @@ data class TaskEntity(
     val tags: String,
     val dueDate: Long,
     val estimateHours: Int,
-    val hasCodeSnippet: Boolean
+    val codeSnippet: String
 )

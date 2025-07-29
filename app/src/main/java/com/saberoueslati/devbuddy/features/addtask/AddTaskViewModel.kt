@@ -1,8 +1,8 @@
 package com.saberoueslati.devbuddy.features.addtask
 
 import androidx.lifecycle.ViewModel
-import com.saberoueslati.devbuddy.data.repository.mockTasks
 import com.saberoueslati.devbuddy.domain.model.Priority
+import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskStatus
 import com.saberoueslati.devbuddy.domain.model.TaskTag
 import com.saberoueslati.devbuddy.utils.BG
@@ -77,8 +77,20 @@ class AddTaskViewModel @Inject constructor(
             return@launch
         }
 
-        // TODO: use proper TASK class
-        useCases.addTaskUseCase.execute(mockTasks.last())
+
+        val newTask = Task(
+            id = 0,
+            title = currentState.title,
+            description = currentState.description,
+            priority = currentState.priority,
+            status = currentState.status,
+            tags = currentState.tags,
+            dueDate = currentState.dueDate ?: LocalDate.now().plusDays(1),
+            estimateHours = currentState.estimate,
+            codeSnippet = currentState.codeSnippet
+        )
+
+        useCases.addTaskUseCase.execute(newTask)
 
         _reaction.emit(AddTaskReaction.OnSaveTaskCompleted)
     }

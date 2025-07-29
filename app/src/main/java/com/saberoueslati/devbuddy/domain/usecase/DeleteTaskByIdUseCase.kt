@@ -1,16 +1,14 @@
 package com.saberoueslati.devbuddy.domain.usecase
 
-import com.saberoueslati.devbuddy.domain.mapper.toModel
-import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.repository.TaskRepository
 import com.saberoueslati.devbuddy.utils.Outcome
 import kotlinx.coroutines.CoroutineDispatcher
 
-class GetAllTasksUseCase(
+class DeleteTaskByIdUseCase(
     private val taskRepository: TaskRepository,
     private val io: CoroutineDispatcher
 ) {
-    fun execute(): Outcome<List<Task>, Exception> {
-        return Outcome.wrapException { taskRepository.getTasks().map { it.toModel() } }
+    suspend fun execute(taskId: Int): Outcome<Unit, Exception> {
+        return Outcome.wrapException { taskRepository.deleteById(taskId = taskId) }
     }
 }

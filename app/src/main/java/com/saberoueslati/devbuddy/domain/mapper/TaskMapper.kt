@@ -1,8 +1,11 @@
 package com.saberoueslati.devbuddy.domain.mapper
 
+import android.util.Log
 import com.saberoueslati.devbuddy.data.local.TaskEntity
 import com.saberoueslati.devbuddy.domain.model.Task
 import com.saberoueslati.devbuddy.domain.model.TaskTag
+import java.time.Instant
+import java.time.ZoneId
 import java.util.Date
 
 fun Task.toEntity(): TaskEntity {
@@ -13,22 +16,23 @@ fun Task.toEntity(): TaskEntity {
         priority = priority,
         status = status,
         tags = tags.joinToString(",") { it.name },
-        dueDate = dueDate.time,
+        dueDate = Date.from(dueDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).time,
         estimateHours = estimateHours,
-        hasCodeSnippet = hasCodeSnippet
+        codeSnippet = codeSnippet.trim()
     )
 }
 
 fun TaskEntity.toModel(): Task {
+    Log.i("Ariadne", "toModel: $this")
     return Task(
         id = id,
         title = title,
         description = description,
         priority = priority,
         status = status,
-        tags = tags.split(",").map { TaskTag.valueOf(it) },
-        dueDate = Date(dueDate),
+        tags = if (tags.isNotEmpty()) tags.split(",").map { TaskTag.valueOf(it) } else emptyList(),
+        dueDate = Instant.ofEpochMilli(dueDate).atZone(ZoneId.systemDefault()).toLocalDate(),
         estimateHours = estimateHours,
-        hasCodeSnippet = hasCodeSnippet
+        codeSnippet = codeSnippet
     )
 }

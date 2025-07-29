@@ -35,7 +35,19 @@ class HomeViewModel @Inject constructor(
             is HomeAction.OnFilterSelected -> onFilterSelected(action.newFilter)
             is HomeAction.OnSearchQueryChanged -> onSearchQueryChanged(action.newQuery)
             is HomeAction.OnTaskClicked -> onTaskClicked(action.task)
+            is HomeAction.OnDeleteTaskClicked -> onDeleteTaskClicked(action.task)
+            is HomeAction.OnTaskStatusClicked -> onTaskStatusClicked(action.task, action.newStatus)
         }
+    }
+
+    private fun onTaskStatusClicked(task: Task, newStatus: TaskStatus) = viewModelScope.launch {
+        val taskId = task.id
+        useCases.updateStatusUseCase.execute(taskId, newStatus)
+    }
+
+    private fun onDeleteTaskClicked(task: Task) = viewModelScope.launch {
+        val taskId = task.id
+        useCases.deleteTaskByIdUseCase.execute(taskId)
     }
 
     private fun onAddTaskClicked() = viewModelScope.launch {

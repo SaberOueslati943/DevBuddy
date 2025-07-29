@@ -2,7 +2,7 @@ package com.saberoueslati.devbuddy.domain.model
 
 import androidx.compose.ui.graphics.Color
 import com.saberoueslati.devbuddy.R
-import java.util.Date
+import java.time.LocalDate
 
 data class Task(
     val id: Int,
@@ -11,9 +11,9 @@ data class Task(
     val priority: Priority,
     val status: TaskStatus,
     val tags: List<TaskTag>,
-    val dueDate: Date,
+    val dueDate: LocalDate,
     val estimateHours: Int,
-    val hasCodeSnippet: Boolean = false
+    val codeSnippet: String
 )
 
 enum class Priority(val resourceId: Int, val color: Color) {

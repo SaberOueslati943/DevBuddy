@@ -10,8 +10,7 @@ import com.saberoueslati.devbuddy.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import java.util.Calendar
-import java.util.Date
+import java.time.LocalDate
 
 val mockTasks = listOf(
     Task(
@@ -21,9 +20,9 @@ val mockTasks = listOf(
         priority = Priority.CRITICAL,
         status = TaskStatus.IN_PROGRESS,
         tags = listOf(TaskTag.BUG_FIX, TaskTag.AUTHENTICATION),
-        dueDate = Date(),
+        dueDate = LocalDate.now(),
         estimateHours = 3,
-        hasCodeSnippet = true
+        codeSnippet = """Regex("^[a-zA-Z0-9!@#\$%^&*()_+]+$").matches(password)"""
     ),
     Task(
         id = 2,
@@ -32,9 +31,9 @@ val mockTasks = listOf(
         priority = Priority.HIGH,
         status = TaskStatus.TODO,
         tags = listOf(TaskTag.FEATURE, TaskTag.UI_UX),
-        dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 1) }.time,
+        dueDate = LocalDate.now().plusDays(1),
         estimateHours = 5,
-        hasCodeSnippet = false
+        codeSnippet = """AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)"""
     ),
     Task(
         id = 3,
@@ -43,9 +42,9 @@ val mockTasks = listOf(
         priority = Priority.MEDIUM,
         status = TaskStatus.TODO,
         tags = listOf(TaskTag.CODE_REVIEW, TaskTag.PAYMENT),
-        dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 2) }.time,
+        dueDate = LocalDate.now().plusDays(2),
         estimateHours = 2,
-        hasCodeSnippet = false
+        codeSnippet = """stripe.confirmPayment(this, ConfirmPaymentIntentParams.create(clientSecret))"""
     ),
     Task(
         id = 4,
@@ -54,9 +53,9 @@ val mockTasks = listOf(
         priority = Priority.LOW,
         status = TaskStatus.BLOCKED,
         tags = listOf(TaskTag.DOCUMENTATION, TaskTag.API),
-        dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 5) }.time,
+        dueDate = LocalDate.now().plusDays(5),
         estimateHours = 4,
-        hasCodeSnippet = false
+        codeSnippet = """@GET("/users/{id}") fun getUser(@Path("id") id: String): Call<User>"""
     ),
     Task(
         id = 5,
@@ -65,9 +64,9 @@ val mockTasks = listOf(
         priority = Priority.MEDIUM,
         status = TaskStatus.COMPLETED,
         tags = listOf(TaskTag.PERFORMANCE, TaskTag.DATABASE),
-        dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -2) }.time,
+        dueDate = LocalDate.now().minusDays(2),
         estimateHours = 6,
-        hasCodeSnippet = true
+        codeSnippet = """SELECT * FROM users WHERE username LIKE '%john%' LIMIT 10"""
     )
 )
 
@@ -91,19 +90,34 @@ class MockTaskRepositoryImpl : TaskRepository {
             priority = Priority.HIGH,
             status = TaskStatus.TODO,
             tags = listOf(TaskTag.FEATURE, TaskTag.AUTHENTICATION),
-            dueDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 3) }.time,
+            dueDate = LocalDate.now().plusDays(3),
             estimateHours = 4,
-            hasCodeSnippet = true
+            codeSnippet = """
+            if (isLogin) {
+                authService.login(email, password)
+            } else {
+                    authService.signup(email, password)
+            }
+            """.trimIndent()
         )
         val current = mockTaskFlow.value.toMutableList()
         current.add(newTask)
         mockTaskFlow.emit(current)
     }
 
-    override suspend fun markDone(taskId: Int) {
-        val updated = mockTaskFlow.value.map {
-            if (it.id == taskId) it.copy(status = TaskStatus.COMPLETED) else it
-        }
+    override suspend fun updateStatusById(taskId: Int, newStatus: String) {
+        val current = mockTaskFlow.value.toMutableList()
+        val newItemWithUpdatedStatus = current
+            .find { it.id == taskId }
+            ?.copy(status = TaskStatus.valueOf(newStatus))
+            ?: throw Exception("Task not found")
+        val updated = current.map { if (it.id == taskId) newItemWithUpdatedStatus else it }
         mockTaskFlow.emit(updated.toMutableList())
+    }
+
+    override suspend fun deleteById(taskId: Int) {
+        val current = mockTaskFlow.value.toMutableList()
+        current.removeIf { it.id == taskId }
+        mockTaskFlow.emit(current)
     }
 }

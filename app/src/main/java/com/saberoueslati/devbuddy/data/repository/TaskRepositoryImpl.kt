@@ -5,8 +5,6 @@ import com.saberoueslati.devbuddy.data.local.TaskEntity
 import com.saberoueslati.devbuddy.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 
-
-// TODO: finish this later
 class TaskRepositoryImpl(
     private val taskDao: TaskDao
 ) : TaskRepository {
@@ -22,7 +20,11 @@ class TaskRepositoryImpl(
         return taskDao.insert(task)
     }
 
-    override suspend fun markDone(taskId: Int) {
-        return taskDao.markDone(taskId)
+    override suspend fun updateStatusById(taskId: Int, newStatus: String) {
+        return taskDao.updateStatusById(taskId, newStatus)
+    }
+
+    override suspend fun deleteById(taskId: Int) {
+        return taskDao.deleteById(taskId)
     }
 }
