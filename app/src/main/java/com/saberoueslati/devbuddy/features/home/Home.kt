@@ -1,5 +1,8 @@
 package com.saberoueslati.devbuddy.features.home
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -120,8 +123,14 @@ fun HomeContent(
                                 } else {
                                     true
                                 }
-                            }) { task ->
-                            TaskItem(task, onAction)
+                            }, key = { it.id }) { task ->
+                            TaskItem(
+                                Modifier.animateItem(
+                                    fadeInSpec = tween(durationMillis = 300),
+                                    fadeOutSpec = tween(durationMillis = 300),
+                                    placementSpec = spring(stiffness = Spring.StiffnessMedium)
+                                ), task, onAction
+                            )
                         }
                     }
                 } else {

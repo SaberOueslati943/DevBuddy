@@ -1,5 +1,11 @@
 package com.saberoueslati.devbuddy.navigation
 
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -16,9 +22,12 @@ import com.saberoueslati.devbuddy.features.feature2.Feature2Route
 import com.saberoueslati.devbuddy.features.home.Home
 import com.saberoueslati.devbuddy.features.home.HomeRoute
 
+private const val NAV_ANIMATION_DURATION = 500
+
 @Composable
 fun NavigationRoot() {
     val backStack = rememberNavBackStack(HomeRoute)
+
     NavDisplay(
         backStack = backStack,
         entryDecorators = listOf(
@@ -26,44 +35,51 @@ fun NavigationRoot() {
             rememberViewModelStoreNavEntryDecorator(),
             rememberSceneSetupNavEntryDecorator()
         ),
+
+        transitionSpec = {
+            ContentTransform(
+                targetContentEnter = slideInHorizontally(
+                    animationSpec = tween(NAV_ANIMATION_DURATION)
+                ) { fullWidth -> fullWidth } + fadeIn(tween(NAV_ANIMATION_DURATION)),
+
+                initialContentExit = slideOutHorizontally(
+                    animationSpec = tween(NAV_ANIMATION_DURATION)
+                ) { fullWidth -> -fullWidth } + fadeOut(tween(NAV_ANIMATION_DURATION))
+            )
+        },
+
+        popTransitionSpec = {
+            ContentTransform(
+                targetContentEnter = slideInHorizontally(
+                    animationSpec = tween(NAV_ANIMATION_DURATION)
+                ) { fullWidth -> -fullWidth } + fadeIn(tween(NAV_ANIMATION_DURATION)),
+
+                initialContentExit = slideOutHorizontally(
+                    animationSpec = tween(NAV_ANIMATION_DURATION)
+                ) { fullWidth -> fullWidth } + fadeOut(tween(NAV_ANIMATION_DURATION))
+            )
+        },
+
         entryProvider = { key ->
             when (key) {
-                is Feature1Route -> {
-                    NavEntry(
-                        key = key
-                    ) {
-                        Feature1 { id ->
-                            backStack.add(Feature2Route(id))
-                        }
-                    }
+                is Feature1Route -> NavEntry(key) {
+                    Feature1 { id -> backStack.add(Feature2Route(id)) }
                 }
 
-                is Feature2Route -> {
-                    NavEntry(
-                        key = key
-                    ) {
-                        Feature2(key.id)
-                    }
+                is Feature2Route -> NavEntry(key) {
+                    Feature2(key.id)
                 }
 
-                is HomeRoute -> {
-                    NavEntry(
-                        key = key
-                    ) {
-                        Home(backStack)
-                    }
+                is HomeRoute -> NavEntry(key) {
+                    Home(backStack)
                 }
 
-                is AddTaskRoute -> {
-                    NavEntry(
-                        key = key
-                    ) {
-                        AddTask(backStack)
-                    }
+                is AddTaskRoute -> NavEntry(key) {
+                    AddTask(backStack)
                 }
 
                 else -> throw RuntimeException("Invalid NavKey.")
             }
-        },
+        }
     )
 }

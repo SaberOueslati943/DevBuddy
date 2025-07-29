@@ -57,15 +57,13 @@ import com.saberoueslati.devbuddy.ui.composables.Filler
 import com.saberoueslati.devbuddy.ui.theme.DevBuddyTheme
 import com.saberoueslati.devbuddy.ui.theme.Spacing
 import com.saberoueslati.devbuddy.ui.theme.background
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
-fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
+fun TaskItem(modifier: Modifier = Modifier, task: Task, onAction: (HomeAction) -> Unit) {
     // TODO: Use Constraint Layout here later
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(interactionSource = null) {
                 onAction.invoke(HomeAction.OnTaskClicked(task))
@@ -158,7 +156,7 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
                                 },
                                 onClick = {
                                     expanded = false
-                                    onAction.invoke(HomeAction.OnTaskStatusClicked(task,status))
+                                    onAction.invoke(HomeAction.OnTaskStatusClicked(task, status))
                                 }
                             )
                         }
@@ -310,6 +308,6 @@ fun TaskItem(task: Task, onAction: (HomeAction) -> Unit) {
 @Composable
 private fun TaskItemPreview() {
     DevBuddyTheme {
-        TaskItem(mockTasks.first()) { }
+        TaskItem(task = mockTasks.first()) { }
     }
 }
