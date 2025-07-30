@@ -26,11 +26,11 @@ val LightError = Color(0xFFB00020)
 val LightOnError = Color.White
 
 // Dark Theme Colors
-val DarkPrimary = Color(0xFF81C784)
+val DarkPrimary = Color.White
 val DarkOnPrimary = Color(0xFF00391E)
 val DarkSecondary = Color(0xFF5DAD4C)
 val DarkOnSecondary = Color.White
-val DarkBackground = Color(0xFF121212)
+val DarkBackground = Color(0xFF575E71)
 val DarkSurface = Color(0xFF1E1E1E)
 val DarkOnSurface = Color(0xFFE0E0E0)
 val DarkError = Color(0xFFCF6679)
@@ -66,7 +66,7 @@ fun DevBuddyTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colors = when {
+    when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -80,11 +80,11 @@ fun DevBuddyTheme(
     LaunchedEffect(darkTheme) {
         val window = (context as Activity).window
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.isAppearanceLightStatusBars = !darkTheme
+        insetsController.isAppearanceLightStatusBars = darkTheme
     }
 
     MaterialTheme(
-        colorScheme = colors,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )
