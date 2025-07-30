@@ -61,7 +61,6 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun TaskItem(modifier: Modifier = Modifier, task: Task, onAction: (HomeAction) -> Unit) {
-    // TODO: Use Constraint Layout here later
     Card(
         modifier = modifier
             .fillMaxWidth()
