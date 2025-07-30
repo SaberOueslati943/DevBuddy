@@ -15,10 +15,6 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.saberoueslati.devbuddy.features.addtask.AddTask
 import com.saberoueslati.devbuddy.features.addtask.AddTaskRoute
-import com.saberoueslati.devbuddy.features.feature1.Feature1
-import com.saberoueslati.devbuddy.features.feature1.Feature1Route
-import com.saberoueslati.devbuddy.features.feature2.Feature2
-import com.saberoueslati.devbuddy.features.feature2.Feature2Route
 import com.saberoueslati.devbuddy.features.home.Home
 import com.saberoueslati.devbuddy.features.home.HomeRoute
 
@@ -62,14 +58,6 @@ fun NavigationRoot() {
 
         entryProvider = { key ->
             when (key) {
-                is Feature1Route -> NavEntry(key) {
-                    Feature1 { id -> backStack.add(Feature2Route(id)) }
-                }
-
-                is Feature2Route -> NavEntry(key) {
-                    Feature2(key.id)
-                }
-
                 is HomeRoute -> NavEntry(key) {
                     Home(backStack)
                 }

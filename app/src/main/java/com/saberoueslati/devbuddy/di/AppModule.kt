@@ -3,7 +3,7 @@ package com.saberoueslati.devbuddy.di
 import android.content.Context
 import com.saberoueslati.devbuddy.data.dao.TaskDao
 import com.saberoueslati.devbuddy.data.database.DevBuddyDb
-import com.saberoueslati.devbuddy.data.repository.MockTaskRepositoryImpl
+import com.saberoueslati.devbuddy.data.repository.TaskRepositoryImpl
 import com.saberoueslati.devbuddy.domain.repository.TaskRepository
 import com.saberoueslati.devbuddy.utils.BG
 import com.saberoueslati.devbuddy.utils.IO
@@ -50,6 +50,6 @@ class AppModule {
     fun provideTaskRepository(
         taskDao: TaskDao
     ): TaskRepository {
-        return MockTaskRepositoryImpl()
+        return TaskRepositoryImpl(taskDao)
     }
 }
